@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.item_news.view.*
 
 class NewsListAdapter( private  val listner: newsitemclick): RecyclerView.Adapter<newsviewholder>() {
     private val items: ArrayList<News> = ArrayList()
@@ -21,6 +23,8 @@ class NewsListAdapter( private  val listner: newsitemclick): RecyclerView.Adapte
     override fun onBindViewHolder(holder: newsviewholder, position: Int) {
         val curr_item = items[position]
         holder.titleview.text = curr_item.title
+        holder.author.text = curr_item.author
+        Glide.with(holder.itemView.context).load(curr_item.imageurl).into(holder.news_image)
     }
 
     override fun getItemCount(): Int {
@@ -37,6 +41,8 @@ class NewsListAdapter( private  val listner: newsitemclick): RecyclerView.Adapte
 
 class newsviewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val titleview: TextView = itemView.findViewById(R.id.textview_itemnews)
+    val author = itemView.author_id
+    val news_image = itemView.image
 }
 interface newsitemclick{
     fun onitemclicked(item: News)
