@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity(), newsitemclick {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //supportActionBar?.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)
        swipetorefresh.setOnRefreshListener {
            fetchData()
        }
@@ -68,3 +69,5 @@ class MainActivity : AppCompatActivity(), newsitemclick {
         //Toast.makeText(this,"The clicked item is $item",Toast.LENGTH_LONG).show()
     }
 }
+
+
