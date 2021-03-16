@@ -2,6 +2,7 @@ package com.intrn.newsapp
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
@@ -13,13 +14,16 @@ class MainActivity : AppCompatActivity(), newsitemclick {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+       swipetorefresh.setOnRefreshListener {
+           fetchData()
+       }
         recyclerView.layoutManager = LinearLayoutManager(this)
         fetchData()
         mAdapter = NewsListAdapter(this)
         recyclerView.adapter = mAdapter
-    //    RecyclerView.LayoutManager= LinearLayoutManager(this)
     }
     private fun fetchData() {
+        swipetorefresh.isRefreshing = true
         val url = "http://newsapi.org/v2/top-headlines?country=in&apiKey=450781e3f9c24954b15c2ed26e55c716"
         val jsonObjectRequest = object :  JsonObjectRequest(
             Request.Method.GET,
@@ -39,10 +43,12 @@ class MainActivity : AppCompatActivity(), newsitemclick {
                     )
                     newsArray.add(news)
                 }
-
+                swipetorefresh.isRefreshing = false
                 mAdapter.updatedNews(newsArray)
             },
             {
+                swipetorefresh.isRefreshing = false
+                Toast.makeText(this,"Error Refreshing ",Toast.LENGTH_SHORT).show()
                 Log.d("Error Api","Api Call failed ${it.localizedMessage}")
             }
         ) {
