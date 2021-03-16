@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_news.view.*
 
 class NewsListAdapter( private  val listner: newsitemclick): RecyclerView.Adapter<newsviewholder>() {
     private val items: ArrayList<News> = ArrayList()
@@ -24,19 +23,20 @@ class NewsListAdapter( private  val listner: newsitemclick): RecyclerView.Adapte
         holder.titleview.text = curr_item.title
     }
 
-    fun updatedNews(updatednews: ArrayList<News>)
-    {
-        items.clear()
-        items.addAll(updatednews)
-        notifyDataSetChanged()
-    }
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    fun updatedNews(updatedNews: ArrayList<News>)
+    {
+        items.clear()
+        items.addAll(updatedNews)
+        notifyDataSetChanged()
     }
 }
 
 class newsviewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val titleview: TextView = itemView.textview_itemnews
+    val titleview: TextView = itemView.findViewById(R.id.textview_itemnews)
 }
 interface newsitemclick{
     fun onitemclicked(item: News)

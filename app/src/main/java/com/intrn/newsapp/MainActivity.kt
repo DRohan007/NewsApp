@@ -1,6 +1,7 @@
 package com.intrn.newsapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
@@ -8,41 +9,52 @@ import com.android.volley.toolbox.JsonObjectRequest
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), newsitemclick {
-    private lateinit var mAdaptor:  NewsListAdapter
+    private lateinit var mAdapter:  NewsListAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        fetch_data()
-        mAdaptor = NewsListAdapter(this)
-        recyclerView.adapter = mAdaptor
+        fetchData()
+        mAdapter = NewsListAdapter(this)
+        recyclerView.adapter = mAdapter
     //    RecyclerView.LayoutManager= LinearLayoutManager(this)
     }
-    private fun fetch_data(){
-        val api = "http://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=450781e3f9c24954b15c2ed26e55c716"
-        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, api, null,
-            { response ->
-                val newsJsonArray = response.getJSONArray("articles")
+    private fun fetchData() {
+        val url = "http://newsapi.org/v2/top-headlines?country=in&apiKey=450781e3f9c24954b15c2ed26e55c716"
+        val jsonObjectRequest = object :  JsonObjectRequest(
+            Request.Method.GET,
+            url,
+            null,
+            {
+                val newsJsonArray = it.getJSONArray("articles")
                 val newsArray = ArrayList<News>()
-                for( i in 0 until newsJsonArray.length())
-                {
+                for(i in 0 until newsJsonArray.length()) {
                     val newsJsonObject = newsJsonArray.getJSONObject(i)
+                    Log.d("temp","requesting method error")
                     val news = News(
                         newsJsonObject.getString("title"),
                         newsJsonObject.getString("author"),
                         newsJsonObject.getString("url"),
-                        newsJsonObject.getString("imageToUrl")
+                        newsJsonObject.getString("urlToImage")
                     )
                     newsArray.add(news)
                 }
-                mAdaptor.updatedNews(newsArray)
-            },
-            { error ->
-                // TODO: Handle error
-            }
-        )
 
-// Access the RequestQueue through your singleton class.
+                mAdapter.updatedNews(newsArray)
+            },
+            {
+                Log.d("Error Api","Api Call failed ${it.localizedMessage}")
+            }
+        ) {
+
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["User-Agent"] = "Mozilla/5.0"
+                return headers
+            }
+
+        }
+
         MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest)
     }
 
