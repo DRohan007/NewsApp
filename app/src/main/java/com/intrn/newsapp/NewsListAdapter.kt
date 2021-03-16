@@ -23,7 +23,13 @@ class NewsListAdapter( private  val listner: newsitemclick): RecyclerView.Adapte
     override fun onBindViewHolder(holder: newsviewholder, position: Int) {
         val curr_item = items[position]
         holder.titleview.text = curr_item.title
-        holder.author.text = curr_item.author
+        if (curr_item.author == "null")
+        {
+            holder.author.text = "Anonymous"
+        }
+        else {
+            holder.author.text = curr_item.author
+        }
         Glide.with(holder.itemView.context).load(curr_item.imageurl).into(holder.news_image)
     }
 
